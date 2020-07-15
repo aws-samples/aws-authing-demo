@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<title>AWS与Authing集成的演示</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/w3.css">
+<body>
+<!-- Navbar (sit on top) -->
+<div class="w3-top" id="topDiv" >
+  <div class="w3-bar w3-white w3-wide w3-padding w3-card">
+    <a class="w3-bar-item w3-button">AWS Solutions</a>
+    <!-- Float links to the right. Hide them on small screens -->
+    <div class="w3-right w3-hide-small">
+      <a class="w3-bar-item w3-button" id="userName" style="display:none">用户信息</a>
+      <a class="w3-bar-item w3-button" id="logout-btn" style="display:none">退出登陆</a>
+      <a class="w3-bar-item w3-button" id="contactus" href="https://github.com/linjungz/aws-authing-demo">示例代码</a>
+    </div>
+  </div>
+</div>
+
+<!-- Before Login Page content -->
+<div  class="w3-display-middle w3-center" style="max-width:800px" id="frontDiv">
+  <div  id="contact" class="w3-display-middle w3-margin-top w3-center"></div>
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16" >AWS 国内区域集成 Authing 认证服务的示例架构</h3>
+       <img src=imgs/architecture.png width=600>
+     <button class="w3-button w3-black w3-section" id="login-btn" type="submit">
+      <span class="w3-padding w3-black w3-opacity-min"><b>通过Authing进行认证</b></span> 
+      </button>
+     
+  </div>  
+</div>
+
+<!-- After Login Page content -->
+<div class="w3-content w3-padding" style="max-width:800px;display:none" id="demoDiv">
+
+  <!-- Contact Section -->
+  <div class="w3-container w3-padding-32" id="contact">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">通过Authing登陆认证并获取 id token</h3>
+     <img src=imgs/diagram1.png width=700>
+     <p>在这个演示环境里我们集成了Authing.cn来进行用户认证，通过OIDC Implict Flow获得id token，并来对API Gateway进行接口调用。用户可以通过curl/Postman并在header中带上以下Token以进行接口调用。</p>
+      <p><b>从Authing获取的id token:</b></p>
+      <textarea  id="tokenText" rows=5 cols=80 ></textarea>
+      <p></p>
+    
+    <div class="w3-container w3-padding-16">
+      <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">演示1: 请求受保护API:</h3>
+      <input class="w3-input w3-border w3-round" type="text" id="urlText">
+      <p>返回结果：</p>
+      <textarea class="w3-input w3-border w3-round" id="responseText"></textarea>
+    </div>
+
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">通过Cognito Identity Pool获取AWS Credential </h3>
+     <p>通过id token可以调用Cognito Identity Pool并请求临时AWS Credential，从而调用相关AWS服务。这里以Polly服务为例进行演示。</p>
+     <img src=imgs/diagram2.png width=700> 
+    
+    <div class="w3-container w3-padding-16">
+      <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">演示2: 访问 AWS 服务</h3>
+      <p>输入一段文字并发送至AWS Polly进行语音合成：</p>
+      <div id="textToSynth">
+        <input autofocus size="23" type="text" id="textEntry" value="春风十里扬州路，卷上珠帘总不如。"/>
+        <button class="btn default" onClick="speakText()">开始合成</button>
+      </div>
+      <audio id="audioPlayback" controls>
+        <source id="audioSource" type="audio/mp3" src="">
+      </audio>
+    </div>
+
+  </div>
+
+
+
+<!-- End page content -->
+</div>
+
+
+<!-- Footer -->
+<footer class="w3-center w3-black w3-padding-small" id="footerDiv" style="display:none">
+  <p>Made with <span style="color: #e25555;">&#9829;</span> in AWS</p>
+</footer>
+
+
+<script src="scripts/jquery.js"></script>
+<script src="scripts/axios.min.js"></script>
+<script src="scripts/aws-sdk-2.668.0.min.js"></script>
+
+<script>
+
+	const app_id = "5eae04a6d8656ea0106747b1" ;
+  const app_url = "aws-oidc-demo-implicitflow" ;
+  //const redirect_url = "https://127.0.0.1:8081"
+  const redirect_url = "https://authing.demo.cbuilder.tech"
+
+  const authing_oidc_login_url = `https://${app_url}.authing.cn/oauth/oidc/auth?client_id=${app_id}&redirect_uri=${redirect_url}&scope=openid profile&response_type=id_token token&state=jazz&nonce=1831289`;
+
+  //const authing_oidc_token_url = `https://${app_url}.authing.cn/oauth/oidc/token`;
+  const authing_oidc_logout_url = `https://${app_url}.authing.cn/login/profile/logout?app_id=${app_id}&redirect_uri=${redirect_url}`;
+
+  const protected_api_url = "https://op0azk0xt5.execute-api.cn-northwest-1.amazonaws.com.cn/Prod/info"
+
+  const idp_url = `${app_url}.authing.cn/oauth/oidc`
+
+  $("#login-btn").click( async function() {
+    console.log("Start login");
+    location.href = authing_oidc_login_url;
+  });
+
+  $("#logout-btn").click( async function() {
+    console.log("Start logout");
+    location.href = authing_oidc_logout_url;
+    
+  });
+
+  const loginStatus = () => {
+        console.log('Start reqeust to demo api')
+        let id_token = localStorage.getItem('id_token')
+
+        //请求受保护的Demo API：
+        config = {
+          method: 'get',
+          url: protected_api_url,
+          headers: {
+            'Authorization': id_token
+          },
+        }
+
+        axios(config)
+          .then(function (response) {
+            console.log('Success: request to API Gateway ')
+            $("#responseText").html(JSON.stringify(response.data, undefined,4));
+          })
+          .catch(error => {
+            console.log('Error: request to API Gateway')
+            console.log(error);
+            $("#responseText").html(JSON.stringify(error.message, undefined,4));
+          });
+
+        //访问AWS资源
+        console.log('Start reqeust to AWS resources')
+        console.log('idp_url: ' + idp_url)
+        // Initialize the Amazon Cognito credentials provider
+        AWS.config.region = 'cn-north-1'; // Region
+        AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+            IdentityPoolId: 'cn-north-1:468a287b-3f0e-49b2-8e71-5d6c677d83cc',
+            Logins: {
+              'aws-oidc-demo-implicitflow.authing.cn/oauth/oidc' : id_token
+            }
+        });
+
+        AWS.config.credentials.get(function(err, cred) {
+            if (!err) {
+                console.log(AWS.config.credentials);
+                console.log('retrieved identity: ' + AWS.config.credentials.identityId);
+
+            } else {
+                self.logger.error('error retrieving identity:' + err);
+                alert('error retrieving identity: ' + err);
+            }
+        });
+
+
+        $('#demoDiv').show();
+        $('#headerDiv').show();
+        $('#footerDiv').show();
+        $('#logout-btn').show();
+        $('#login-btn').hide();
+        $('#frontDiv').hide();
+        $('#tokenText').html(localStorage.getItem('id_token'));
+        $('#bodyText').val('{}');
+        $('#urlText').val(protected_api_url); 
+
+  }
+
+  const logoutStatus = () => {
+        $('#demoDiv').hide();
+        $('#headerDiv').hide();
+        $('#footerDiv').hide();
+        $('#logout-btn').hide();
+        $('#login-btn').show();
+        $('#frontDiv').show();
+
+  }
+
+  function speakText() {
+      AWS.config.region = 'cn-northwest-1'
+      // Create the JSON parameters for getSynthesizeSpeechUrl
+      var speechParams = {
+          OutputFormat: "mp3",
+          SampleRate: "16000",
+          Text: "",
+          TextType: "text",
+          VoiceId: "Zhiyu"
+      };
+      speechParams.Text = document.getElementById("textEntry").value;
+
+      // Create the Polly service object and presigner object
+      var polly = new AWS.Polly({apiVersion: '2016-06-10'});
+      var signer = new AWS.Polly.Presigner(speechParams, polly)
+  
+      // Create presigned URL of synthesized speech file
+      signer.getSynthesizeSpeechUrl(speechParams, function(error, url) {
+        if (error) {
+            document.getElementById('result').innerHTML = error;
+        } else {
+            document.getElementById('audioSource').src = url;
+            document.getElementById('audioPlayback').load();
+            document.getElementById('audioPlayback').play();
+        }
+      });
+    }
+    
+
+  const queryString = window.location.hash.substr(1)
+  console.log(queryString)
+
+  const urlParams = new URLSearchParams(queryString);
+
+  const id_token = urlParams.get("id_token")
+  
+  if (id_token) {
+    console.log('Get id_token: ' + id_token);
+    localStorage.setItem('id_token', id_token);
+    loginStatus()
+    if (location.hash) {
+      location.hash='';
+      history.replaceState('','','/');
+    }
+  }
+  else {
+    console.log('no id_token!');
+    logoutStatus();
+  }
+  
+</script>
+
+
+</body>
+</html>

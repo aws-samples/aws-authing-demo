@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  aws-oidc-authing-demo
+
+  A simple demo for leveraging Authing.cn as a OIDC Identity Provider for AWS API Gateway
+  @Author: Randy Lin
+  @Github: linjungz
+  
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+
+  # A Simple Demo API
+  AWSOIDCAuthingApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowMethods: "'*'"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
+      Auth:
+        DefaultAuthorizer: MyLambdaTokenAuthorizer
+        AddDefaultAuthorizerToCorsPreflight: false
+        Authorizers:
+          MyLambdaTokenAuthorizer:
+            FunctionArn: !GetAtt LambdaAuthorizerFunction.Arn
+
+  # A Simple demo api which is protected using Authing.cn
+  # Return: user ip
+  ProtectedAPIFunction: 
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: protected-api/
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Events:
+        GetRoot:
+          Type: Api 
+          Properties:
+            RestApiId: !Ref AWSOIDCAuthingApi
+            Path: /info
+            Method: get             
+
+  # A Lambda Authorizer used by API Gateway to verify JWT issued from Authing
+  LambdaAuthorizerFunction: 
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: lambda-authorizer/
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+
+Outputs:
+
+  AWSOIDCAuthingApi:
+    Description: "API URL for Protected API function"
+    Value: !Sub "https://${AWSOIDCAuthingApi}.execute-api.${AWS::Region}.amazonaws.com.cn/Prod/info"
+
+  # AuthingHelperAPI:
+  #   Description: "API URL for helper API to exchange id token using authorization code"
+  #   Value: !Sub https://${AuthingHelperAPI}.execute-api.${AWS::Region}.amazonaws.com.cn/Prod/code2idtoken"
+  

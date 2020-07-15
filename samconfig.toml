@@ -1,0 +1,9 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "aws-authing-demo"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-kw8angxitdes"
+s3_prefix = "aws-authing-demo"
+region = "cn-northwest-1"
+capabilities = "CAPABILITY_IAM"
