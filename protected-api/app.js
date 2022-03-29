@@ -31,7 +31,7 @@ let response;
  * 
  */
 
-exports.lambdaHandler = async (event, context) => {
+exports.handler = async (event, context) => {
     console.log(event)
     console.log(context)
     try {

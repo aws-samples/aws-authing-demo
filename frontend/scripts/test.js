@@ -11,7 +11,7 @@ const authing_oidc_logout_url = `https://${app_domian}/login/profile/logout?app_
 const aws_app_name = 'r7cegaab3j.execute-api';//https://r7cegaab3j.execute-api.us-east-1.amazonaws.com/Prod/info
 const region = 'us-east-1';
 const protected_api_url = `https://${aws_app_name}.${region}.amazonaws.com/Prod/info`;
-const aws_identity_pool_id = 'us-east-1_GqLO2CpeH';
+const aws_identity_pool_id = 'us-east-1:52be5dba-74e0-4798-b616-b5d4938732b7';
 
 $("#login-btn").click(async function () {
     console.log("Start login");

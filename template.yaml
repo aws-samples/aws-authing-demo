@@ -36,7 +36,7 @@ Resources:
     Type: AWS::Serverless::Function 
     Properties:
       CodeUri: protected-api/
-      Handler: app.lambdaHandler
+      Handler: app.handler
       Runtime: nodejs12.x
       Events:
         GetRoot:
@@ -51,7 +51,7 @@ Resources:
     Type: AWS::Serverless::Function 
     Properties:
       CodeUri: lambda-authorizer/
-      Handler: app.lambdaHandler
+      Handler: app.handler
       Runtime: nodejs12.x
 
 Outputs:
