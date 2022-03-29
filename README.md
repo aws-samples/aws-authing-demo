@@ -66,7 +66,7 @@ $ sam deploy --guided
 3. Authing 与 Cognito Identity Pool 的集成配置
 
 3.1 在 IAM 中将 Authing 添加为 OIDC Provider, 其中 
-- Provider URL : 即为 Authing 应用对应的 Issuer, 比如本示例使用的 issuer 为：https://aws-oidc-demo-implicitflow.authing.cn/oauth/oidc
+- Provider URL : 即为 Authing 应用对应的 Issuer, 比如本示例使用的 issuer 为：https://aws-oidc-demo-implicitflow.authing.cn/oidc
 - Audience: 即为 Authig应用对应的 App ID
 
 创建成功后如下所示：
