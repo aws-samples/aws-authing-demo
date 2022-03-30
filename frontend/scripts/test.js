@@ -52,7 +52,17 @@ const loginStatus = () => {
         if (!err) {
             console.log(AWS.config.credentials);
             console.log('retrieved identity: ' + AWS.config.credentials.identityId);
+            // Create S3 service object
+            const s3 = new AWS.S3({apiVersion: '2006-03-01'});
 
+            // Call S3 to list the buckets
+            s3.listBuckets(function(err, data) {
+                if (err) {
+                    console.log("listBuckets Error", err);
+                } else {
+                    console.log("listBuckets Success", data.Buckets);
+                }
+            });
         } else {
             self.logger.error('error retrieving identity:' + err);
             alert('error retrieving identity: ' + err);
