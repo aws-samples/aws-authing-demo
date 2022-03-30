@@ -3,7 +3,7 @@ version = 0.1
 [default.deploy]
 [default.deploy.parameters]
 stack_name = "sam-app"
-s3_bucket = "<%= aws_bucket_name %>"
+s3_bucket = "<%= aws_bucket_name_deploy %>"
 s3_prefix = "sam-app"
 region = "<%= aws_region %>"
 capabilities = "CAPABILITY_IAM"

@@ -56,15 +56,18 @@ const loginStatus = () => {
             const s3 = new AWS.S3({apiVersion: '2006-03-01'});
 
             // Call S3 to list the buckets
-            s3.listBuckets(function(err, data) {
+            s3.getObject({
+                Bucket: aws_bucket_name_test,
+                Key: 'LICENSE'
+            },function(err, data) {
                 if (err) {
-                    console.log("listBuckets Error", err);
+                    console.log("getObject Error", err);
                 } else {
-                    console.log("listBuckets Success", data.Buckets);
+                    console.log("getObject Success", data);
                 }
             });
         } else {
-            self.logger.error('error retrieving identity:' + err);
+            console.error('error retrieving identity:' + err);
             alert('error retrieving identity: ' + err);
         }
     });
