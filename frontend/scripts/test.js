@@ -134,7 +134,7 @@ if (id_token) {
     loginStatus()
     if (location.hash) {
         location.hash = '';
-        history.replaceState('', '', '/');
+        // history.replaceState('', '', '/');
     }
 }
 else {
