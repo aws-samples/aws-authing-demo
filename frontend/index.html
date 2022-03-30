@@ -13,7 +13,7 @@
     <div class="w3-right w3-hide-small">
       <a class="w3-bar-item w3-button" id="userName" style="display:none">用户信息</a>
       <a class="w3-bar-item w3-button" id="logout-btn" style="display:none">退出登陆</a>
-      <a class="w3-bar-item w3-button" id="contactus" href="https://github.com/linjungz/aws-authing-demo">示例代码</a>
+      <a class="w3-bar-item w3-button" id="contactus" href="https://github.com/yunnysunny/aws-authing-demo">项目代码</a>
     </div>
   </div>
 </div>
@@ -22,7 +22,7 @@
 <div  class="w3-display-middle w3-center" style="max-width:800px" id="frontDiv">
   <div  id="contact" class="w3-display-middle w3-margin-top w3-center"></div>
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16" >AWS 国内区域集成 Authing 认证服务的示例架构</h3>
-       <img src=imgs/architecture.png width=600>
+       <!-- <img src=imgs/architecture.png width=600> -->
      <button class="w3-button w3-black w3-section" id="login-btn" type="submit">
       <span class="w3-padding w3-black w3-opacity-min"><b>通过Authing进行认证</b></span> 
       </button>
@@ -36,7 +36,7 @@
   <!-- Contact Section -->
   <div class="w3-container w3-padding-32" id="contact">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">通过Authing登陆认证并获取 id token</h3>
-     <img src=imgs/diagram1.png width=700>
+     <!-- <img src=imgs/diagram1.png width=700> -->
      <p>在这个演示环境里我们集成了Authing.cn来进行用户认证，通过OIDC Implict Flow获得id token，并来对API Gateway进行接口调用。用户可以通过curl/Postman并在header中带上以下Token以进行接口调用。</p>
       <p><b>从Authing获取的id token:</b></p>
       <textarea  id="tokenText" rows=5 cols=80 ></textarea>
@@ -51,7 +51,7 @@
 
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">通过Cognito Identity Pool获取AWS Credential </h3>
      <p>通过id token可以调用Cognito Identity Pool并请求临时AWS Credential，从而调用相关AWS服务。这里以Polly服务为例进行演示。</p>
-     <img src=imgs/diagram2.png width=700> 
+     <!-- <img src=imgs/diagram2.png width=700>  -->
     
     <div class="w3-container w3-padding-16">
       <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">演示2: 访问 AWS 服务</h3>
@@ -80,9 +80,8 @@
 
 
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="scripts/axios.min.js"></script>
 <script src="scripts/aws-sdk-2.668.0.min.js"></script>
-
+<script src="scripts/config.js"></script>
 <script src="scripts/test.js"></script>
 </body>
 </html>

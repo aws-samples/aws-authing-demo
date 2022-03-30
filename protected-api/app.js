@@ -16,7 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-let response;
+
 
 /**
  *
@@ -34,6 +34,7 @@ let response;
 exports.handler = async (event, context) => {
     console.log(event)
     console.log(context)
+    let response;
     try {
         response = {
             'statusCode': 200,

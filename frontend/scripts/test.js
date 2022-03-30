@@ -1,17 +1,11 @@
-const app_id = "624162eab668a3e35dd91414";
-const app_name = "aws-demo-next";
-const sp_domain = 'authing.whyun.com';
-const redirect_url = `https://${sp_domain}`;
 const app_domian = `${app_name}.authing.cn`;
 const authing_oidc_issue_suffix = `${app_domian}/oidc`;
 const authing_oidc_issue = `https://${authing_oidc_issue_suffix}`;
-const authing_oidc_login_url = `https://${app_domian}/oidc/auth?client_id=${app_id}&redirect_uri=${redirect_url}&scope=openid profile&response_type=id_token token&state=jazz&nonce=1831289`;
+const authing_oidc_login_url = `https://${app_domian}/oidc/auth?client_id=${app_id}&redirect_uri=${sp_redirect_url}&scope=openid profile&response_type=id_token token&state=jazz&nonce=1831289`;
 
-const authing_oidc_logout_url = `https://${app_domian}/login/profile/logout?app_id=${app_id}&redirect_uri=${redirect_url}`;
-const aws_app_name = 'r7cegaab3j.execute-api';//https://r7cegaab3j.execute-api.us-east-1.amazonaws.com/Prod/info
-const region = 'us-east-1';
-const protected_api_url = `https://${aws_app_name}.${region}.amazonaws.com/Prod/info`;
-const aws_identity_pool_id = 'us-east-1:52be5dba-74e0-4798-b616-b5d4938732b7';
+const authing_oidc_logout_url = `https://${app_domian}/oidc/session/end?app_id=${app_id}&redirect_uri=${sp_redirect_url}`;
+const aws_domain = region.startsWith('cn-') ? 'amazonaws.com.cn' : 'amazonaws.com'
+const protected_api_url = `https://${aws_api_id}.execute-api.${region}.${aws_domain}/Prod/info`;
 
 $("#login-btn").click(async function () {
     console.log("Start login");
@@ -21,7 +15,6 @@ $("#login-btn").click(async function () {
 $("#logout-btn").click(async function () {
     console.log("Start logout");
     location.href = authing_oidc_logout_url;
-
 });
 
 const loginStatus = () => {
@@ -35,18 +28,14 @@ const loginStatus = () => {
         headers: {
             'Authorization': id_token
         },
+        
     }
-
-    axios(config)
-        .then(function (response) {
-            console.log('Success: request to API Gateway ')
-            $("#responseText").html(JSON.stringify(response.data, undefined, 4));
-        })
-        .catch(error => {
-            console.log('Error: request to API Gateway')
-            console.log(error);
-            $("#responseText").html(JSON.stringify(error.message, undefined, 4));
-        });
+    $.ajax(config).done(function(data) {
+        console.log('Success: request to API Gateway ')
+        $("#responseText").html(JSON.stringify(data, undefined, 4));
+    }).fail(function(xhr, textStatus, errorThrown ) {
+        $("#responseText").html(errorThrown);
+    });
 
     //访问AWS资源
     console.log('Start reqeust to AWS resources')

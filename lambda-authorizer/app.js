@@ -24,7 +24,8 @@
  */
 
 const jwt = require('jsonwebtoken');
-const jose = require('jose')
+const jose = require('jose');
+const keyConfig = require('./key');
 
 exports.handler = function (event, context, callback) {
   //console.log(event);
@@ -50,14 +51,7 @@ exports.handler = function (event, context, callback) {
     //具体可查阅：https://docs.authing.cn/authing/authentication/oidc/oidc-authorization
 
     //如果使用自定的签名密钥，则在下方填入密钥（如下是示例应用的自定义签名密钥）
-    let key = jose.JWK.asKey({
-      "e": "AQAB", 
-      "n": "19VRpu6FsXvUcc9KZ3fhe4sa5ikT74EvQi6ll4GNWQIV0E5e96QXnVo4ksa_CCAS9JB6HbSHuFvyOuLJeiAgNicn6GgU9YwrDSnFG7_BzSD4WeuDL1OmDen4APQy8NM-LNH942rVJ9nNx0kSwrSyt7zIw5fJpWKZzQNC5833lvRN1pLJ1Y0IAixQqa81sbURG04wkLbICt4qTGTDk1SzilIjo1a9MIf6cs8c67dKSWmg29Lh0NmgtoeJbTZf85qEAtTrtGcb3Kn1hRKnW7IkGw1WfUdL_Jdgcxb7x3swaXo35waxWWIMr87xhx4ARvqLyGB0xjazNHigobKeXrz2RQ", 
-      "kty": "RSA", 
-      "alg": "RS256", 
-      "use": "sig", 
-      "kid": "rZaf_R7zAWm2x8-05vH20TilHINecd90WFykzf1T2Ik" 
-    });
+    const key = jose.JWK.asKey(keyConfig);
     const pubkey = key.toPEM();
 
     console.log('RSA Pubkey: ' + pubkey);

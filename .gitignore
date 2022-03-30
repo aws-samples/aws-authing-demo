@@ -2,3 +2,8 @@
 .DS_Store
 .vscode
 node_modules
+/frontend/scripts/config.js
+/lambda-authorizer/key.js
+samconfig.toml
+*.bat
+/samconfig.toml
