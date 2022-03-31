@@ -6,7 +6,7 @@ let pubKey = null;
 try {
   pubKey = JSON.parse(KEY);
 } catch (e) {
-  console.error('parse public key failed',e);
+  console.error('parse public key failed',e, KEY);
   process.exit(2);
 }
 
