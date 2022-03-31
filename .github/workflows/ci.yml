@@ -7,6 +7,10 @@ on:
       - 'frontend/**'
 env:
   AUTHING_PUB_KEY: ${{ secrets.AUTHING_PUB_KEY }}
+  AUTHING_APP_ID: ${{ secrets.AUTHING_APP_ID }}
+  AUTHING_APP_SECRET: ${{ secrets.AUTHING_APP_SECRET }}
+  AUTHING_TEST_USERNAME: ${{ secrets.AUTHING_TEST_USERNAME }}
+  AUTHING_TEST_PASSWORD: ${{ secrets.AUTHING_TEST_PASSWORD }}
 jobs:
   test:
     runs-on: ubuntu-latest
