@@ -5,7 +5,8 @@ on:
       - 'docs/**'
       - '**.md'
       - 'frontend/**'
-
+env:
+  AUTHING_APP_SECRET: ${{ secrets.AUTHING_APP_SECRET }}
 jobs:
   test:
     runs-on: ubuntu-latest
