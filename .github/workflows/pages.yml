@@ -7,7 +7,14 @@ on:
     paths:
         - "config/**"
         - "frontend/**"
-
+env:
+  AUTHING_APP_ID: ${{ secrets.AUTHING_APP_ID }}
+  AUTHING_APP_NAME: ${{ secrets.AUTHING_APP_NAME }}
+  SP_REDIRECT_URL: ${{ secrets.SP_REDIRECT_URL }}
+  AWS_API_ID: ${{ secrets.AWS_API_ID }}
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+  AWS_IDENTITY_POOL_ID: ${{ secrets.AWS_IDENTITY_POOL_ID }}
+  AWS_BUCKET_NAME_TEST: ${{ secrets.AWS_BUCKET_NAME_TEST }}
 jobs:
   pages:
     runs-on: ubuntu-latest
