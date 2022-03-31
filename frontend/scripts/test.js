@@ -113,7 +113,7 @@ $(document).ready(function() {
             // Call S3 to list the buckets
             s3.getObject({
                 Bucket: aws_bucket_name_test,
-                Key: 'LICENSE'
+                Key: $('input[name="s3-filename"]').val() || 'LICENSE'
             },function(err, data) {
                 if (err) {
                     console.log("getObject Error", err);
