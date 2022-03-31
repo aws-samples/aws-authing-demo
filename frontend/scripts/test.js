@@ -1,25 +1,31 @@
 const app_domian = `${app_name}.authing.cn`;
 const authing_oidc_issue_suffix = `${app_domian}/oidc`;
 const authing_oidc_issue = `https://${authing_oidc_issue_suffix}`;
-const authing_oidc_login_url = `https://${app_domian}/oidc/auth?client_id=${app_id}&redirect_uri=${sp_redirect_url}&scope=openid profile&response_type=id_token token&state=jazz&nonce=1831289`;
-
-const authing_oidc_logout_url = `https://${app_domian}/oidc/session/end?app_id=${app_id}&redirect_uri=${sp_redirect_url}`;
+const login_params = $.param({
+    client_id: app_id,
+    redirect_uri: sp_redirect_url,
+    scope: 'openid profile',
+    response_type: 'id_token token',
+    state: 'jazz',
+    nonce: '1831289'
+});
+const authing_oidc_login_url = `https://${app_domian}/oidc/auth?${login_params}`;
+const logout_params = $.param({
+    app_id: app_id,
+    redirect_uri: sp_redirect_url
+});
+const authing_oidc_logout_url = `https://${app_domian}/oidc/session/end?${logout_params}`;
 const aws_domain = region.startsWith('cn-') ? 'amazonaws.com.cn' : 'amazonaws.com'
 const protected_api_url = `https://${aws_api_id}.execute-api.${region}.${aws_domain}/Prod/info`;
 const awsCredentialsPromise = $.Deferred();
-$("#login-btn").click(async function () {
-    console.log("Start login");
-    location.href = authing_oidc_login_url;
-});
-
-$("#logout-btn").click(async function () {
-    console.log("Start logout");
-    location.href = authing_oidc_logout_url;
-});
+const queryString = window.location.hash.substring(1);
+const urlParams = new URLSearchParams(queryString);
+const NAME_ID_TOKEN = 'id_token';
+const id_token = urlParams.get(NAME_ID_TOKEN);
 
 const loginStatus = () => {
     console.log('Start reqeust to demo api')
-    let id_token = sessionStorage.getItem('id_token')
+    const id_token = sessionStorage.getItem(NAME_ID_TOKEN);
 
     //请求受保护的Demo API：
     config = {
@@ -61,50 +67,39 @@ const loginStatus = () => {
     });
 
 
-    $('#demoDiv').show();
-    $('#headerDiv').show();
-    $('#footerDiv').show();
-    $('#logout-btn').show();
-    $('#login-btn').hide();
-    $('#frontDiv').hide();
-    $('#tokenText').html(sessionStorage.getItem('id_token'));
+    $('body').removeClass('not-logined').addClass('has-logined');
+    $('#tokenText').html(sessionStorage.getItem(NAME_ID_TOKEN));
     $('#bodyText').val('{}');
     $('#urlText').val(protected_api_url);
-
 }
 
 const logoutStatus = () => {
-    $('#demoDiv').hide();
-    $('#headerDiv').hide();
-    $('#footerDiv').hide();
-    $('#logout-btn').hide();
-    $('#login-btn').show();
-    $('#frontDiv').show();
-
+    sessionStorage.removeItem(NAME_ID_TOKEN);
+    $('body').removeClass('has-logined').addClass('not-logined');
 }
 
-const queryString = window.location.hash.substring(1)
-console.log(queryString)
-
-const urlParams = new URLSearchParams(queryString);
-
-const id_token = urlParams.get("id_token")
-
-if (id_token) {
-    console.log('Get id_token: ' + id_token);
-    sessionStorage.setItem('id_token', id_token);
-    loginStatus()
-    if (location.hash) {
-        location.hash = '';
-        // history.replaceState('', '', '/');
-    }
-}
-else {
-    console.log('no id_token!');
-    logoutStatus();
-}
 
 $(document).ready(function() {
+    if (id_token) {
+        console.log('Get id_token: ' + id_token);
+        sessionStorage.setItem(NAME_ID_TOKEN, id_token);
+        loginStatus()
+        if (location.hash) {
+            location.hash = '';
+        }
+    } else {
+        console.log('no id_token!');
+        logoutStatus();
+    }
+    $("#login-btn").click(function () {
+        console.log("Start login");
+        location.href = authing_oidc_login_url;
+    });
+    
+    $("#logout-btn").click(function () {
+        console.log("Start logout");
+        location.href = authing_oidc_logout_url;
+    });
     $('button[name="s3-get-object"]').click(function() {
         awsCredentialsPromise.then(function() {
             // Create S3 service object

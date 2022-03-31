@@ -8,17 +8,42 @@
     <title>AWS与Authing集成的演示</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/w3.css">
+    <style type="text/css">
+      .not-logined #demoDiv,
+      .not-logined #headerDiv,
+      .not-logined #footerDiv,
+      .not-logined #logout-btn {
+        display: none;
+      }
+      
+      .not-logined #frontDiv {
+        display: block;
+      }
+      .not-logined #login-btn {
+        display: inline;
+      }
+      .has-logined #demoDiv,
+      .has-logined #headerDiv,
+      .has-logined #footerDiv,
+      .has-logined #logout-btn {
+        display: block;
+      }
+      .has-logined #login-btn,
+      .has-logined #frontDiv {
+        display: none;
+      }
+    </style>
   </head>
   
-<body>
+<body class="not-logined">
 <!-- Navbar (sit on top) -->
 <div class="w3-top" id="topDiv" >
   <div class="w3-bar w3-white w3-wide w3-padding w3-card">
     <a class="w3-bar-item w3-button">AWS Solutions</a>
     <!-- Float links to the right. Hide them on small screens -->
     <div class="w3-right w3-hide-small">
-      <a class="w3-bar-item w3-button" id="userName" style="display:none">用户信息</a>
-      <a class="w3-bar-item w3-button" id="logout-btn" style="display:none">退出登陆</a>
+      <!-- <a class="w3-bar-item w3-button" id="userName" style="display:none">用户信息</a> -->
+      <a class="w3-bar-item w3-button" id="logout-btn">退出登陆</a>
       <a class="w3-bar-item w3-button" id="contactus" href="https://github.com/yunnysunny/aws-authing-demo">项目代码</a>
     </div>
   </div>
@@ -37,7 +62,7 @@
 </div>
 
 <!-- After Login Page content -->
-<div class="w3-content w3-padding" style="max-width:800px;display:none" id="demoDiv">
+<div class="w3-content w3-padding" style="max-width:800px" id="demoDiv">
 
   <!-- Contact Section -->
   <div class="w3-container w3-padding-32" id="contact">
@@ -72,12 +97,12 @@
 
 
 <!-- Footer -->
-<footer class="w3-center w3-black w3-padding-small" id="footerDiv" style="display:none">
+<footer class="w3-center w3-black w3-padding-small" id="footerDiv">
   <p>Made with <span style="color: #e25555;">&#9829;</span> in AWS</p>
 </footer>
 
 
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/jquery/3.6.0/jquery.min.js"></script>
 <script src="scripts/aws-sdk-2.668.0.min.js"></script>
 <script src="scripts/config.js"></script>
 <script src="scripts/test.js"></script>
