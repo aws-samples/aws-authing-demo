@@ -68,6 +68,7 @@ jobs:
       # create config
       - run: yarn install --production
       - run: npm run config:sam
+      - run: yarn config:key
       # sam build 
       - run: sam build
 
