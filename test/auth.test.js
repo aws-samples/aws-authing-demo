@@ -30,6 +30,7 @@ describe('Tests index', function() {
         }
 
         authorizationToken =  res.body.id_token;
+        done();
       });
       
     
@@ -41,7 +42,7 @@ describe('Tests index', function() {
     };
     app.handler(event, {}, function(err, auth) {
       expect(err).to.be.null;
-      expect(auth).to.be.an('object').to.haveOwnProperty('policyDocument');
+      expect(auth).to.be.an('object').to.haveOwnProperty('principalId');
     });    
   });
 });
