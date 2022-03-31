@@ -71,4 +71,4 @@ jobs:
 
 
       # sam deploy
-      - run: sam deploy --no-confirm-changeset
+      - run: sam deploy
