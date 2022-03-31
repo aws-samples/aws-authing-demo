@@ -6,7 +6,7 @@ const authing_oidc_login_url = `https://${app_domian}/oidc/auth?client_id=${app_
 const authing_oidc_logout_url = `https://${app_domian}/oidc/session/end?app_id=${app_id}&redirect_uri=${sp_redirect_url}`;
 const aws_domain = region.startsWith('cn-') ? 'amazonaws.com.cn' : 'amazonaws.com'
 const protected_api_url = `https://${aws_api_id}.execute-api.${region}.${aws_domain}/Prod/info`;
-
+const awsCredentialsPromise = $.Deferred();
 $("#login-btn").click(async function () {
     console.log("Start login");
     location.href = authing_oidc_login_url;
@@ -19,7 +19,7 @@ $("#logout-btn").click(async function () {
 
 const loginStatus = () => {
     console.log('Start reqeust to demo api')
-    let id_token = localStorage.getItem('id_token')
+    let id_token = sessionStorage.getItem('id_token')
 
     //请求受保护的Demo API：
     config = {
@@ -52,20 +52,8 @@ const loginStatus = () => {
         if (!err) {
             console.log(AWS.config.credentials);
             console.log('retrieved identity: ' + AWS.config.credentials.identityId);
-            // Create S3 service object
-            const s3 = new AWS.S3({apiVersion: '2006-03-01'});
-
-            // Call S3 to list the buckets
-            s3.getObject({
-                Bucket: aws_bucket_name_test,
-                Key: 'LICENSE'
-            },function(err, data) {
-                if (err) {
-                    console.log("getObject Error", err);
-                } else {
-                    console.log("getObject Success", data);
-                }
-            });
+            awsCredentialsPromise.resolve();
+            
         } else {
             console.error('error retrieving identity:' + err);
             alert('error retrieving identity: ' + err);
@@ -79,7 +67,7 @@ const loginStatus = () => {
     $('#logout-btn').show();
     $('#login-btn').hide();
     $('#frontDiv').hide();
-    $('#tokenText').html(localStorage.getItem('id_token'));
+    $('#tokenText').html(sessionStorage.getItem('id_token'));
     $('#bodyText').val('{}');
     $('#urlText').val(protected_api_url);
 
@@ -95,36 +83,7 @@ const logoutStatus = () => {
 
 }
 
-function speakText() {
-    AWS.config.region = region;
-    // Create the JSON parameters for getSynthesizeSpeechUrl
-    var speechParams = {
-        OutputFormat: "mp3",
-        SampleRate: "16000",
-        Text: "",
-        TextType: "text",
-        VoiceId: "Zhiyu"
-    };
-    speechParams.Text = document.getElementById("textEntry").value;
-
-    // Create the Polly service object and presigner object
-    var polly = new AWS.Polly({ apiVersion: '2016-06-10' });
-    var signer = new AWS.Polly.Presigner(speechParams, polly)
-
-    // Create presigned URL of synthesized speech file
-    signer.getSynthesizeSpeechUrl(speechParams, function (error, url) {
-        if (error) {
-            document.getElementById('result').innerHTML = error;
-        } else {
-            document.getElementById('audioSource').src = url;
-            document.getElementById('audioPlayback').load();
-            document.getElementById('audioPlayback').play();
-        }
-    });
-}
-
-
-const queryString = window.location.hash.substr(1)
+const queryString = window.location.hash.substring(1)
 console.log(queryString)
 
 const urlParams = new URLSearchParams(queryString);
@@ -133,7 +92,7 @@ const id_token = urlParams.get("id_token")
 
 if (id_token) {
     console.log('Get id_token: ' + id_token);
-    localStorage.setItem('id_token', id_token);
+    sessionStorage.setItem('id_token', id_token);
     loginStatus()
     if (location.hash) {
         location.hash = '';
@@ -144,3 +103,26 @@ else {
     console.log('no id_token!');
     logoutStatus();
 }
+
+$(document).ready(function() {
+    $('button[name="s3-get-object"]').click(function() {
+        awsCredentialsPromise.then(function() {
+            // Create S3 service object
+            const s3 = new AWS.S3({apiVersion: '2006-03-01'});
+
+            // Call S3 to list the buckets
+            s3.getObject({
+                Bucket: aws_bucket_name_test,
+                Key: 'LICENSE'
+            },function(err, data) {
+                if (err) {
+                    console.log("getObject Error", err);
+                } else {
+                    console.log("getObject Success", data);
+                    $('#s3-response').text(JSON.stringify(data));
+                }
+            });
+        });
+        
+    });
+});

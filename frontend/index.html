@@ -42,11 +42,11 @@
   <!-- Contact Section -->
   <div class="w3-container w3-padding-32" id="contact">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">通过Authing登陆认证并获取 id token</h3>
-     <!-- <img src=imgs/diagram1.png width=700> -->
-     <p>在这个演示环境里我们集成了Authing.cn来进行用户认证，通过OIDC Implict Flow获得id token，并来对API Gateway进行接口调用。用户可以通过curl/Postman并在header中带上以下Token以进行接口调用。</p>
-      <p><b>从Authing获取的id token:</b></p>
-      <textarea  id="tokenText" rows=5 cols=80 ></textarea>
-      <p></p>
+    <!-- <img src=imgs/diagram1.png width=700> -->
+    <p>在这个演示环境里我们集成了Authing.cn来进行用户认证，通过OIDC Implict Flow获得id token，并来对API Gateway进行接口调用。用户可以通过curl/Postman并在header中带上以下Token以进行接口调用。</p>
+    <p><b>从Authing获取的id token:</b></p>
+    <textarea  id="tokenText" rows=5 cols=80 ></textarea>
+    <p></p>
     
     <div class="w3-container w3-padding-16">
       <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">演示1: 请求受保护API:</h3>
@@ -56,25 +56,17 @@
     </div>
 
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">通过Cognito Identity Pool获取AWS Credential </h3>
-     <p>通过id token可以调用Cognito Identity Pool并请求临时AWS Credential，从而调用相关AWS服务。这里以Polly服务为例进行演示。</p>
+    <p>通过id token可以调用Cognito Identity Pool并请求临时AWS Credential，从而调用相关AWS服务。这里以Polly服务为例进行演示。</p>
      <!-- <img src=imgs/diagram2.png width=700>  -->
-    
     <div class="w3-container w3-padding-16">
-      <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">演示2: 访问 AWS 服务</h3>
-      <p>输入一段文字并发送至AWS Polly进行语音合成：</p>
-      <div id="textToSynth">
-        <input autofocus size="23" type="text" id="textEntry" value="春风十里扬州路，卷上珠帘总不如。"/>
-        <button class="btn default" onClick="speakText()">开始合成</button>
-      </div>
-      <audio id="audioPlayback" controls>
-        <source id="audioSource" type="audio/mp3" src="">
-      </audio>
+      <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">演示2: 通过 S3 下载文件:</h3>
+      <input class="w3-input w3-border w3-round" type="text" name="s3-filename" value="LICENSE" />
+      <br />
+      <button name="s3-get-object" type="button">获取文件</button>
+      <p>返回结果：</p>
+      <textarea class="w3-input w3-border w3-round" id="s3-response"></textarea>
     </div>
-
   </div>
-
-
-
 <!-- End page content -->
 </div>
 
