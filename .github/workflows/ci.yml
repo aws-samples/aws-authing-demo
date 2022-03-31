@@ -43,7 +43,7 @@ jobs:
         run: |
           npm run test
   build-deploy:
-    needs: test
+    # needs: test
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
@@ -71,4 +71,4 @@ jobs:
 
 
       # sam deploy
-      - run: sam deploy
+      - run: sam deploy --config-file ./samconfig.toml
