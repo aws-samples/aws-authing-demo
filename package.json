@@ -4,7 +4,7 @@
   "description": "This is a simple demo for integrating Authing in AWS China region to protect API Gateway REST API and other AWS resources such as IoT, Polly and etc.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ",
+    "test": "mocha --recursive test/ --timeout 999999",
     "config:front": "node build/config_frontend.js",
     "config:sam": "node build/config_sam.js",
     "config:key": "node build/config_auth_key.js",
@@ -27,5 +27,13 @@
   "homepage": "https://github.com/yunnysunny/aws-authing-demo#readme",
   "dependencies": {
     "ejs": "^3.1.6"
+  },
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "eslint": "^8.12.0",
+    "jose": "^4.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "mocha": "^9.2.2",
+    "superagent": "^7.1.2"
   }
 }

@@ -31,24 +31,24 @@
  * 
  */
 
-exports.handler = async (event, context) => {
-    console.log(event)
-    console.log(context)
-    let response;
-    try {
-        response = {
-            'statusCode': 200,
-            headers: {
-                'Access-Control-Allow-Origin' : '*'
-            },
-            body: JSON.stringify({
-                message: "You're authorized. Source IP:  " + event.requestContext.identity.sourceIp
-            })
-        }
-    } catch (err) {
-        console.log(err);
-        return err;
-    }
+exports.handler = async(event, context) => {
+  console.log(event);
+  console.log(context);
+  let response;
+  try {
+    response = {
+      'statusCode': 200,
+      headers: {
+        'Access-Control-Allow-Origin' : '*'
+      },
+      body: JSON.stringify({
+        message: 'You\'re authorized. Source IP:  ' + event.requestContext.identity.sourceIp
+      })
+    };
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
 
-    return response
+  return response;
 };
