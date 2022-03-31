@@ -31,6 +31,8 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install Dependencies
         run: yarn install
+      - name: Config
+        run: yarn config:key
       - name: Test On Node ${{ matrix.node-version }}
 
         run: |
