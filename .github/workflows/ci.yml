@@ -41,4 +41,5 @@ jobs:
       - name: Test On Node ${{ matrix.node-version }}
 
         run: |
+          ls lambda-authorizer
           npm run test
