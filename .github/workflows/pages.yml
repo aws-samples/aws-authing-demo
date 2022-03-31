@@ -5,8 +5,9 @@ on:
     # branches:
     #   - master  # default branch
     paths:
-        - "config/**"
+        - "build/**"
         - "frontend/**"
+        - .github/workflows/pages.yml
 env:
   AUTHING_APP_ID: ${{ secrets.AUTHING_APP_ID }}
   AUTHING_APP_NAME: ${{ secrets.AUTHING_APP_NAME }}
