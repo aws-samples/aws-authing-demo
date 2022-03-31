@@ -6,7 +6,7 @@ on:
       - '**.md'
       - 'frontend/**'
 env:
-  AUTHING_APP_SECRET: ${{ secrets.AUTHING_APP_SECRET }}
+  AUTHING_PUB_KEY: ${{ secrets.AUTHING_PUB_KEY }}
 jobs:
   test:
     runs-on: ubuntu-latest
