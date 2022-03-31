@@ -1,5 +1,3 @@
-'use strict';
-
 const app = require('../protected-api/app.js');
 const chai = require('chai');
 const expect = chai.expect;

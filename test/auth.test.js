@@ -1,4 +1,3 @@
-'use strict';
 const request = require('superagent');
 const app = require('../lambda-authorizer/app.js');
 const chai = require('chai');
