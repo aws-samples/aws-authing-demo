@@ -11,6 +11,8 @@ env:
   AUTHING_APP_SECRET: ${{ secrets.AUTHING_APP_SECRET }}
   AUTHING_TEST_USERNAME: ${{ secrets.AUTHING_TEST_USERNAME }}
   AUTHING_TEST_PASSWORD: ${{ secrets.AUTHING_TEST_PASSWORD }}
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+  AWS_BUCKET_NAME_DEPLOY: ${{ secrets.AWS_BUCKET_NAME_DEPLOY }}
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -71,4 +73,4 @@ jobs:
 
 
       # sam deploy
-      - run: sam deploy --config-file ./samconfig.toml
+      - run: sam deploy
