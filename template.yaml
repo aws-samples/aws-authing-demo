@@ -19,11 +19,11 @@ Resources:
     Properties:
       CorsConfiguration:
         AllowMethods:
-          - "'OPTIONS, GET'"
+          - "OPTIONS, GET"
         AllowHeaders:
-          - "'*'"
+          - "*"
         AllowOrigin:
-          - "'*'"
+          - "*"
       Auth:
         Authorizers:
           MyOauth2Authorizer:
