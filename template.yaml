@@ -6,7 +6,13 @@ Description: >
   A simple demo for leveraging Authing.cn as a OIDC Identity Provider for AWS API Gateway
   @Author: Randy Lin
   @Github: linjungz
-  
+Parameters:
+  AuthingAppIssuer:
+    Description: Authing app issuer link
+    Type: String
+  AuthingAppId:
+    Description: Authing app ID
+    Type: String
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
@@ -14,16 +20,17 @@ Globals:
 
 Resources:
 
-  MyApi:
+  OIDCAuthTest:
     Type: AWS::Serverless::HttpApi
     Properties:
       CorsConfiguration:
-        AllowMethods:
-          - "OPTIONS, GET"
+        AllowOrigins:
+          - "*"
         AllowHeaders:
           - "*"
-        AllowOrigin:
-          - "*"
+        AllowMethods:
+          - GET
+          - OPTIONS
       Auth:
         Authorizers:
           MyOauth2Authorizer:
@@ -32,8 +39,8 @@ Resources:
             IdentitySource: $request.header.Authorization
             JwtConfiguration:
               audience:
-                - 6243e61458b3c60aa1ec0e7d
-              issuer: "https://aws-demo-yunnysunny.authing.cn/oidc"
+                - !Ref AuthingAppId
+              issuer: !Ref AuthingAppIssuer
         DefaultAuthorizer: MyOauth2Authorizer
       StageName: Prod
   MyFunction:
@@ -43,7 +50,7 @@ Resources:
       Events:
         GetRoot:
           Properties:
-            ApiId: MyApi
+            ApiId: OIDCAuthTest
             Method: get
             Path: /oidc-test
             PayloadFormatVersion: "2.0"
