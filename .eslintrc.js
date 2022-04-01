@@ -7,7 +7,14 @@ module.exports = {
     jquery: true,
   },
   'globals': {
-    'AWS': true
+    'AWS': true,
+    app_id: true,
+    app_name: true,
+    sp_redirect_url: true,
+    region: true,
+    aws_lambda_auth_api_id: true,
+    aws_oidc_auth_api_id: true,
+    aws_identity_pool_id: true
   },
   'extends': 'eslint:recommended',
   'parserOptions': {

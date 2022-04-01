@@ -16,21 +16,19 @@ const logout_params = $.param({
 });
 const authing_oidc_logout_url = `https://${app_domian}/oidc/session/end?${logout_params}`;
 const aws_domain = region.startsWith('cn-') ? 'amazonaws.com.cn' : 'amazonaws.com';
-const protected_api_url = `https://${aws_api_id}.execute-api.${region}.${aws_domain}/Prod/info`;
+const auth_via_lambda_api_url = `https://${aws_lambda_auth_api_id}.execute-api.${region}.${aws_domain}/Prod/info`;
+const auth_via_oidc_api_url = `https://${aws_oidc_auth_api_id}.execute-api.${region}.${aws_domain}/Prod/oidc-test`;
 const awsCredentialsPromise = $.Deferred();
 const queryString = window.location.hash.substring(1);
 const urlParams = new URLSearchParams(queryString);
 const NAME_ID_TOKEN = 'id_token';
 const id_token = urlParams.get(NAME_ID_TOKEN);
 
-const loginStatus = () => {
-  console.log('Start reqeust to demo api');
-  const id_token = sessionStorage.getItem(NAME_ID_TOKEN);
-
+function showApiResult(url, id_token, $resultArea) {
   //请求受保护的Demo API：
   const config = {
     method: 'get',
-    url: protected_api_url,
+    url,
     headers: {
       'Authorization': id_token
     },
@@ -38,11 +36,18 @@ const loginStatus = () => {
   };
   $.ajax(config).done(function(data) {
     console.log('Success: request to API Gateway ');
-    $('#responseText').html(JSON.stringify(data, undefined, 4));
+    $resultArea.text(JSON.stringify(data, undefined, 4));
   }).fail(function(xhr, textStatus, errorThrown ) {
-    $('#responseText').html(errorThrown);
+    $resultArea.text(errorThrown);
   });
+}
 
+const loginStatus = () => {
+  console.log('Start reqeust to demo api');
+  const id_token = sessionStorage.getItem(NAME_ID_TOKEN);
+
+  showApiResult(auth_via_lambda_api_url, id_token, $('#responseText'));
+  showApiResult(auth_via_oidc_api_url, id_token, $('textarea[name="auth-via-oidc-res"]'));
   //访问AWS资源
   console.log('Start reqeust to AWS resources');
   // Initialize the Amazon Cognito credentials provider
@@ -70,7 +75,8 @@ const loginStatus = () => {
   $('body').removeClass('not-logined').addClass('has-logined');
   $('#tokenText').html(sessionStorage.getItem(NAME_ID_TOKEN));
   $('#bodyText').val('{}');
-  $('#urlText').val(protected_api_url);
+  $('#urlText').val(auth_via_lambda_api_url);
+  $('input[name="auth-via-oidc-api"]').val(auth_via_oidc_api_url);
 };
 
 const logoutStatus = () => {
