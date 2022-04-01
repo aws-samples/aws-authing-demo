@@ -32,7 +32,7 @@ function showApiResult(url, token, $resultArea) {
     method: 'get',
     url,
     headers: {
-      'Authorization': token
+      'Authorization': 'Bearer '+token
     },
         
   };
