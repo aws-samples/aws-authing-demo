@@ -14,6 +14,36 @@ Globals:
 
 Resources:
 
+  MyApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      Auth:
+        Authorizers:
+          MyOauth2Authorizer:
+            AuthorizationScopes:
+              - openid
+            IdentitySource: $request.header.Authorization
+            JwtConfiguration:
+              audience:
+                - 6243e61458b3c60aa1ec0e7d
+              issuer: "https://aws-demo-yunnysunny.authing.cn/oidc"
+        DefaultAuthorizer: MyOauth2Authorizer
+      StageName: Prod
+  MyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./protected-api/
+      Events:
+        GetRoot:
+          Properties:
+            ApiId: MyApi
+            Method: get
+            Path: /oidc-test
+            PayloadFormatVersion: "2.0"
+          Type: HttpApi
+      Handler: app.handler
+      Runtime: nodejs12.x
+
   # A Simple Demo API
   AWSOIDCAuthingApi:
     Type: AWS::Serverless::Api
