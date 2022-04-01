@@ -22,15 +22,17 @@ const awsCredentialsPromise = $.Deferred();
 const queryString = window.location.hash.substring(1);
 const urlParams = new URLSearchParams(queryString);
 const NAME_ID_TOKEN = 'id_token';
+const NAME_ACCESS_TOKEN = 'access_token';
 const id_token = urlParams.get(NAME_ID_TOKEN);
+const access_token = urlParams.get(NAME_ACCESS_TOKEN);
 
-function showApiResult(url, id_token, $resultArea) {
+function showApiResult(url, token, $resultArea) {
   //请求受保护的Demo API：
   const config = {
     method: 'get',
     url,
     headers: {
-      'Authorization': id_token
+      'Authorization': token
     },
         
   };
@@ -44,10 +46,10 @@ function showApiResult(url, id_token, $resultArea) {
 
 const loginStatus = () => {
   console.log('Start reqeust to demo api');
-  const id_token = sessionStorage.getItem(NAME_ID_TOKEN);
+  // const id_token = sessionStorage.getItem(NAME_ID_TOKEN);
 
   showApiResult(auth_via_lambda_api_url, id_token, $('#responseText'));
-  showApiResult(auth_via_oidc_api_url, id_token, $('textarea[name="auth-via-oidc-res"]'));
+  showApiResult(auth_via_oidc_api_url, access_token, $('textarea[name="auth-via-oidc-res"]'));
   //访问AWS资源
   console.log('Start reqeust to AWS resources');
   // Initialize the Amazon Cognito credentials provider
@@ -73,14 +75,14 @@ const loginStatus = () => {
 
 
   $('body').removeClass('not-logined').addClass('has-logined');
-  $('#tokenText').html(sessionStorage.getItem(NAME_ID_TOKEN));
+  $('#tokenText').html(id_token);
   $('#bodyText').val('{}');
   $('#urlText').val(auth_via_lambda_api_url);
   $('input[name="auth-via-oidc-api"]').val(auth_via_oidc_api_url);
 };
 
 const logoutStatus = () => {
-  sessionStorage.removeItem(NAME_ID_TOKEN);
+  // sessionStorage.removeItem(NAME_ID_TOKEN);
   $('body').removeClass('has-logined').addClass('not-logined');
 };
 
@@ -88,7 +90,7 @@ const logoutStatus = () => {
 $(document).ready(function() {
   if (id_token) {
     console.log('Get id_token: ' + id_token);
-    sessionStorage.setItem(NAME_ID_TOKEN, id_token);
+    // sessionStorage.setItem(NAME_ID_TOKEN, id_token);
     loginStatus();
     if (location.hash) {
       location.hash = '';
