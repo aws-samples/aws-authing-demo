@@ -17,10 +17,7 @@ Resources:
   MyApi:
     Type: AWS::Serverless::HttpApi
     Properties:
-      Cors:
-        AllowMethods: "'OPTIONS, GET'"
-        AllowHeaders: "'*'"
-        AllowOrigin: "'*'"
+      CorsConfiguration: true
       Auth:
         Authorizers:
           MyOauth2Authorizer:
