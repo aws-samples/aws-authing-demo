@@ -11,7 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^1.6.0",
-    "jose": "^1.28.2",
+    "jose": "^2.0.7",
     "jsonwebtoken": "^9.0.0"
   },
   "scripts": {
